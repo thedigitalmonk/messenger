@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var app = require('../application');
 var debug = require('debug')('node-rest:server');
 var http = require('http');
 
@@ -50,7 +50,7 @@ function normalizePort(val) {
 }
 
 /**
- * Event listener for HTTP server "error" event.
+ * Event listener for HTTP server "errors" event.
  */
 
 function onError(error) {

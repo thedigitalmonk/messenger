@@ -1,47 +1,43 @@
-import {Headers, Http, Response} from "@angular/http";
-import {EventEmitter, Injectable} from "@angular/core";
+import { Http, Response, Headers } from "@angular/http";
+import { Injectable, EventEmitter } from "@angular/core";
 import 'rxjs/Rx';
+import { Observable } from "rxjs";
 
 import { Message } from "./message.model";
-import {Observable} from "rxjs/Observable";
-import {ErrorService} from "../error/error.service";
+import { ErrorService } from "../errors/error.service";
 
 @Injectable()
 export class MessageService {
     private messages: Message[] = [];
     messageEditMode = new EventEmitter<Message>();
 
-    constructor(private http: Http, private errorService: ErrorService) {}
+    constructor(private _http: Http, private errorService: ErrorService) {}
 
     addMessage(message: Message) {
         const body = JSON.stringify(message);
-        const headers = new Headers({
-            'Content-Type' : 'application/json'
-        });
+        const headers = new Headers({'Content-Type': 'application/json'});
         const token = localStorage.getItem('token')
-                        ? '?token=' + localStorage.getItem('token')
-                        : '';
-        return this.http.post('https://monk-messages.herokuapp.com/message' + token, body, {headers: headers})
-            .map((response: Response) =>{
+            ? '?token=' + localStorage.getItem('token')
+            : '';
+        return this._http.post('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message' + token, body, {headers: headers})
+            .map((response: Response) => {
                 const result = response.json();
-                const message =  new Message(
-                                    result.obj.content,
-                                    result.obj.user.firstName,
-                                    result.obj._id,
-                                    result.obj.user._id);
+                const message = new Message(
+                    result.obj.content,
+                    result.obj.user.firstName,
+                    result.obj._id,
+                    result.obj.user._id);
                 this.messages.push(message);
                 return message;
             })
-            .catch(
-                (error: Response) => {
-                    this.errorService.handleError(error.json());
-                    return Observable.throw(error.json());
-                }
-            );
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 
     getMessages() {
-        return this.http.get('https://monk-messages.herokuapp.com/message')
+        return this._http.get('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message')
             .map((response: Response) => {
                 const messages = response.json().obj;
                 let transformedMessages: Message[] = [];
@@ -50,17 +46,16 @@ export class MessageService {
                         message.content,
                         message.user.firstName,
                         message._id,
-                        message.user._id));
+                        message.user._id)
+                    );
                 }
                 this.messages = transformedMessages;
                 return transformedMessages;
             })
-            .catch(
-                (error: Response) => {
-                    this.errorService.handleError(error.json());
-                    return Observable.throw(error.json());
-                }
-            );
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 
     editMessage(message: Message) {
@@ -69,18 +64,16 @@ export class MessageService {
 
     updateMessage(message: Message) {
         const body = JSON.stringify(message);
-        const headers = new Headers({'Content-Type' : 'application/json'});
+        const headers = new Headers({'Content-Type': 'application/json'});
         const token = localStorage.getItem('token')
             ? '?token=' + localStorage.getItem('token')
             : '';
-        return this.http.patch('https://monk-messages.herokuapp.com/message/' + message.messageId + token, body, {headers: headers})
+        return this._http.patch('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message/' + message.messageId + token, body, {headers: headers})
             .map((response: Response) => response.json())
-            .catch(
-                (error: Response) => {
-                    this.errorService.handleError(error.json());
-                    return Observable.throw(error.json());
-                }
-            );
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 
     deleteMessage(message: Message) {
@@ -88,13 +81,11 @@ export class MessageService {
         const token = localStorage.getItem('token')
             ? '?token=' + localStorage.getItem('token')
             : '';
-        return this.http.delete('https://monk-messages.herokuapp.com/message/' + message.messageId + token)
+        return this._http.delete('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message/' + message.messageId + token)
             .map((response: Response) => response.json())
-            .catch(
-                (error: Response) => {
-                    this.errorService.handleError(error.json());
-                    return Observable.throw(error.json());
-                }
-            );
+            .catch((error: Response) => {
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 }

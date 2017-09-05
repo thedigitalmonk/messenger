@@ -4,30 +4,30 @@ import 'rxjs/Rx';
 import { Observable } from "rxjs";
 
 import { User } from "./user.model";
-import { ErrorService } from "../error/error.service";
+import { ErrorService } from "../errors/error.service";
 
 @Injectable()
 export class AuthService {
-    constructor(private http: Http, private errorService: ErrorService) {}
+    constructor(private _http: Http, private errorService: ErrorService) {}
 
     signup(user: User) {
         const body = JSON.stringify(user);
         const headers = new Headers({'Content-Type': 'application/json'});
-        return this.http.post('https://monk-messages.herokuapp.com/user', body, {headers: headers})
+        return this._http.post('http://monkmessages-env.us-east-2.elasticbeanstalk.com/', body, {headers: headers})
             .map((response: Response) => response.json())
             .catch((error: Response) => {
                 this.errorService.handleError(error.json());
-                return Observable.throw(error.json());
+                return Observable.throw('errors in auth service');
             });
     }
 
     signin(user: User) {
         const body = JSON.stringify(user);
         const headers = new Headers({'Content-Type': 'application/json'});
-        return this.http.post('https://monk-messages.herokuapp.com/user/signin', body, {headers: headers})
+        return this._http.post('http://monkmessages-env.us-east-2.elasticbeanstalk.com/signin', body, {headers: headers})
             .map((response: Response) => response.json())
             .catch((error: Response) => {
-                this.errorService.handleError(error.json());
+                this.errorService.handleError('errors in auth service');
                 return Observable.throw(error.json());
             });
     }

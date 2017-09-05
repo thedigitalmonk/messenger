@@ -7,8 +7,8 @@ import { AuthenticationComponent } from "./auth/authentication.component";
 import { HeaderComponent } from "./header.component";
 import { routing } from "./app.routing";
 import {AuthService} from "./auth/auth.service";
-import {ErrorService} from "./error/error.service";
-import {ErrorComponent} from "./error/error.component";
+import {ErrorService} from "./errors/error.service";
+import {ErrorComponent} from "./errors/error.component";
 import {MessageModule} from "./messages/message.module";
 
 @NgModule({

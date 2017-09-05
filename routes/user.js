@@ -14,7 +14,7 @@ router.post('/', function (req, res, next) {
     user.save(function (err, result) {
         if (err) {
             return res.status(500).json({
-                title: 'An error occurred',
+                title: 'An errors occurred',
                 error: err
             });
         }
@@ -29,7 +29,7 @@ router.post('/signin', function (req, res, next) {
    User.findOne({email: req.body.email}, function (err, user) {
        if (err) {
            return res.status(500).json({
-               title: 'An error occurred',
+               title: 'An errors occurred',
                error: err
            });
        }
