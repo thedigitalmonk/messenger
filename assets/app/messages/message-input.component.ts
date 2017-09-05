@@ -40,7 +40,7 @@ export class MessageInputComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.messageService.messageEditMode.subscribe(
+        this.messageService.messageIsEdit.subscribe(
             (message: Message) => this.message = message
         );
     }

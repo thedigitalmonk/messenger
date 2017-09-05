@@ -9,9 +9,10 @@ import { ErrorService } from "../errors/error.service";
 @Injectable()
 export class MessageService {
     private messages: Message[] = [];
-    messageEditMode = new EventEmitter<Message>();
+    messageIsEdit = new EventEmitter<Message>();
 
-    constructor(private _http: Http, private errorService: ErrorService) {}
+    constructor(private http: Http, private errorService: ErrorService) {
+    }
 
     addMessage(message: Message) {
         const body = JSON.stringify(message);
@@ -19,7 +20,7 @@ export class MessageService {
         const token = localStorage.getItem('token')
             ? '?token=' + localStorage.getItem('token')
             : '';
-        return this._http.post('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message' + token, body, {headers: headers})
+        return this.http.post('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message' + token, body, {headers: headers})
             .map((response: Response) => {
                 const result = response.json();
                 const message = new Message(
@@ -37,7 +38,7 @@ export class MessageService {
     }
 
     getMessages() {
-        return this._http.get('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message')
+        return this.http.get('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message')
             .map((response: Response) => {
                 const messages = response.json().obj;
                 let transformedMessages: Message[] = [];
@@ -59,7 +60,7 @@ export class MessageService {
     }
 
     editMessage(message: Message) {
-        this.messageEditMode.emit(message);
+        this.messageIsEdit.emit(message);
     }
 
     updateMessage(message: Message) {
@@ -68,7 +69,7 @@ export class MessageService {
         const token = localStorage.getItem('token')
             ? '?token=' + localStorage.getItem('token')
             : '';
-        return this._http.patch('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message/' + message.messageId + token, body, {headers: headers})
+        return this.http.patch('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message/' + message.messageId + token, body, {headers: headers})
             .map((response: Response) => response.json())
             .catch((error: Response) => {
                 this.errorService.handleError(error.json());
@@ -81,7 +82,7 @@ export class MessageService {
         const token = localStorage.getItem('token')
             ? '?token=' + localStorage.getItem('token')
             : '';
-        return this._http.delete('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message/' + message.messageId + token)
+        return this.http.delete('http://monkmessages-env.us-east-2.elasticbeanstalk.com/message/' + message.messageId + token)
             .map((response: Response) => response.json())
             .catch((error: Response) => {
                 this.errorService.handleError(error.json());
