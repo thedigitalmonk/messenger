@@ -1,10 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var jwt = require('jsonwebtoken');
 
 var Message = require('../models/message');
 var User = require('../models/user');
-
-var jwt = require('jsonwebtoken');
 
 router.get('/', function (req, res, next) {
     Message.find()
