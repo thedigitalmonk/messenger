@@ -11,7 +11,12 @@ var messageRoutes = require('./routes/messages');
 var userRoutes = require('./routes/user');
 
 var app = express();
-mongoose.connect(ENV['MLAB_USER'] + ':' + ENV['MLAB_PASSWORD'] + '@' + ENV['MLAB_URL']);
+
+require('dotenv').config();
+
+const mongoDB_URL = `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_DATABASENAME}`;
+//console.log(mongoDB_URL);
+mongoose.connect(mongoDB_URL);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
